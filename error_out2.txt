@@ -1,0 +1,146 @@
+﻿python : 2026-04-07 
+07:08:36.886203: I tensorf
+low/core/util/port.cc:153]
+ oneDNN custom operations 
+are on. You may see 
+slightly different 
+numerical results due to 
+floating-point round-off 
+errors from different 
+computation orders. To 
+turn them off, set the 
+environment variable 
+`TF_ENABLE_ONEDNN_OPTS=0`.
+At line:1 char:34
++ pip install --upgrade 
+protobuf ; python 
+server.py 2>&1 | Out-File 
+-En ...
++                         
+         
+~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (2  
+  026-04-07 07:0...ONED   
+ NN_OPTS=0`.:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+Traceback (most recent 
+call last):
+  File "C:\Users\RAGHU RAM
+\Downloads\guitar_shawnmen
+des-main3\guitar_shawnmend
+es-main\server.py", line 
+9, in <module>
+    import tensorflow as 
+tf
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\tensorflow\__init__
+.py", line 468, in 
+<module>
+    importlib.import_modul
+e("keras.src.optimizers")
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\importl
+ib\__init__.py", line 
+126, in import_module
+    return _bootstrap._gcd
+_import(name[level:], 
+package, level)
+           ^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\keras\__init__.py",
+ line 7, in <module>
+    from keras import 
+_tf_keras as _tf_keras
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\keras\_tf_keras\__i
+nit__.py", line 1, in 
+<module>
+    from keras._tf_keras 
+import keras
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\keras\_tf_keras\ker
+as\__init__.py", line 29, 
+in <module>
+    from keras import 
+wrappers as wrappers
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\keras\wrappers\__in
+it__.py", line 7, in 
+<module>
+    from keras.src.wrapper
+s.sklearn_wrapper import (
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\keras\src\wrappers\
+__init__.py", line 1, in 
+<module>
+    from keras.src.wrapper
+s.sklearn_wrapper import 
+SKLearnClassifier
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\keras\src\wrappers\
+sklearn_wrapper.py", line 
+8, in <module>
+    from 
+keras.src.wrappers.fixes 
+import _routing_enabled
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\keras\src\wrappers\
+fixes.py", line 2, in 
+<module>
+    import sklearn
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\sklearn\__init__.py
+", line 87, in <module>
+    from .base import 
+clone
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\sklearn\base.py", 
+line 19, in <module>
+    from .utils import 
+_IS_32BIT
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\sklearn\utils\__ini
+t__.py", line 28, in 
+<module>
+    from .murmurhash 
+import murmurhash3_32
+  File "sklearn\\utils\\mu
+rmurhash.pyx", line 1, in 
+init 
+sklearn.utils.murmurhash
+ValueError: numpy.dtype 
+size changed, may 
+indicate binary 
+incompatibility. Expected 
+96 from C header, got 88 
+from PyObject

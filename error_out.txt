@@ -1,0 +1,122 @@
+﻿python : 2026-04-07 
+07:07:37.841495: I tensorf
+low/core/util/port.cc:153]
+ oneDNN custom operations 
+are on. You may see 
+slightly different 
+numerical results due to 
+floating-point round-off 
+errors from different 
+computation orders. To 
+turn them off, set the 
+environment variable 
+`TF_ENABLE_ONEDNN_OPTS=0`.
+At line:1 char:1
++ python server.py 2>&1 | 
+Out-File -Encoding utf8 
+error_out.txt
++ ~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (2  
+  026-04-07 07:0...ONED   
+ NN_OPTS=0`.:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+Traceback (most recent 
+call last):
+  File "C:\Users\RAGHU RAM
+\Downloads\guitar_shawnmen
+des-main3\guitar_shawnmend
+es-main\server.py", line 
+9, in <module>
+    import tensorflow as 
+tf
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\tensorflow\__init__
+.py", line 49, in <module>
+    from 
+tensorflow._api.v2 import 
+__internal__
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\tensorflow\_api\v2\
+__internal__\__init__.py",
+ line 8, in <module>
+    from tensorflow._api.v
+2.__internal__ import 
+autograph
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\tensorflow\_api\v2\
+__internal__\autograph\__i
+nit__.py", line 8, in 
+<module>
+    from tensorflow.python
+.autograph.core.ag_ctx 
+import control_status_ctx 
+# line: 34
+    ^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\tensorflow\python\a
+utograph\core\ag_ctx.py", 
+line 21, in <module>
+    from tensorflow.python
+.autograph.utils import 
+ag_logging
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\tensorflow\python\a
+utograph\utils\__init__.py
+", line 17, in <module>
+    from tensorflow.python
+.autograph.utils.context_m
+anagers import control_dep
+endency_on_returns
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\tensorflow\python\a
+utograph\utils\context_man
+agers.py", line 19, in 
+<module>
+    from tensorflow.python
+.framework import ops
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\tensorflow\python\f
+ramework\ops.py", line 
+33, in <module>
+    from 
+tensorflow.core.framework 
+import attr_value_pb2
+  File "C:\Users\RAGHU RAM
+\AppData\Local\Programs\Py
+thon\Python311\Lib\site-pa
+ckages\tensorflow\core\fra
+mework\attr_value_pb2.py",
+ line 9, in <module>
+    from google.protobuf 
+import runtime_version as 
+_runtime_version
+ImportError: cannot 
+import name 
+'runtime_version' from 
+'google.protobuf' 
+(C:\Users\RAGHU RAM\AppDat
+a\Local\Programs\Python\Py
+thon311\Lib\site-packages\
+google\protobuf\__init__.p
+y)

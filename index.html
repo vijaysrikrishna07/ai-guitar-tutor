@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Real-time guitar chord coach with interactive 3D fretboard and computer vision tracking. Practice guitar chords with tactile audio-visual feedback." />
+  <title>Guitar Chord Coach — Studio Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-mark">
+          <span class="logo-icon">🎸</span>
+        </div>
+        <div class="logo-text-group">
+          <span class="logo-text">Guitar Chord <span class="accent">Studio</span></span>
+          <span class="logo-badge">Pro 3D</span>
+        </div>
+      </div>
+
+      <!-- Studio Navigation Tabs -->
+      <nav class="studio-nav" id="studioNav" aria-label="Application Sections">
+        <button class="nav-tab active" data-tab="tab-coach" id="tabBtnCoach">
+          <span class="nav-tab-icon">🎯</span> Visual Coach
+        </button>
+        <button class="nav-tab" data-tab="tab-3d" id="tabBtn3D">
+          <span class="nav-tab-icon">🪐</span> 3D Interactive Fretboard
+        </button>
+        <button class="nav-tab" data-tab="tab-practice" id="tabBtnPractice">
+          <span class="nav-tab-icon">🎙️</span> Practice Session
+        </button>
+        <button class="nav-tab" data-tab="tab-freeplay" id="tabBtnFreeplay">
+          <span class="nav-tab-icon">⚡</span> Free Play
+        </button>
+        <button class="nav-tab" data-tab="tab-chords" id="tabBtnChords">
+          <span class="nav-tab-icon">📚</span> Chord Library
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <div class="status-bar">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="statusText">Ready</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="studio-content">
+
+      <!-- ================= TAB 1: VISUAL COACH ================= -->
+      <div class="tab-pane active" id="tab-coach">
+        <main class="main-layout">
+          <!-- Left panel: Controls -->
+          <aside class="controls-panel glass tilt-card">
+            <section class="control-section">
+              <div class="section-header">
+                <h2 class="section-title">📷 Camera Source</h2>
+                <span class="section-tag">Vision AI</span>
+              </div>
+              <div class="button-row">
+                <button id="btnStartCamera" class="btn btn-primary" aria-label="Start webcam">
+                  <span class="btn-icon">▶</span> Start Camera
+                </button>
+                <button id="btnStopCamera" class="btn btn-secondary" disabled aria-label="Stop webcam">
+                  <span class="btn-icon">■</span> Stop
+                </button>
+              </div>
+
+              <div class="handedness-toggle">
+                <label class="label switch-label" for="leftHandedToggle">
+                  <input type="checkbox" id="leftHandedToggle">
+                  <span class="slider round"></span>
+                  <span class="toggle-text">Left-Handed Mode</span>
+                </label>
+                <p class="hint-text">Enable if neck points to camera right</p>
+              </div>
+            </section>
+
+            <section class="control-section">
+              <div class="section-header">
+                <h2 class="section-title">🎯 Chord Target</h2>
+              </div>
+              <label class="label" for="chordSelect">Active Chord</label>
+              <select id="chordSelect" class="select" aria-label="Active chord">
+                <option value="Em" selected>E Minor</option>
+              </select>
+              <div id="chordDiagram" class="chord-diagram"></div>
+            </section>
+
+            <section class="control-section">
+              <div class="section-header">
+                <h2 class="section-title">📐 Fretboard ROI</h2>
+              </div>
+              <p class="hint-text">Manually adjust ROI box to align with your guitar neck.</p>
+              <div class="button-row">
+                <button id="btnCalibrate" class="btn btn-secondary" disabled aria-label="Start calibration">
+                  <span class="btn-icon">⊞</span> Manual ROI
+                </button>
+                <button id="btnConfirmCalibration" class="btn btn-success hidden" aria-label="Confirm calibration">
+                  <span class="btn-icon">✓</span> Confirm
+                </button>
+                <button id="btnCancelCalibration" class="btn btn-secondary hidden" aria-label="Cancel calibration">
+                  Cancel
+                </button>
+              </div>
+            </section>
+
+            <section class="control-section">
+              <div class="section-header">
+                <h2 class="section-title">📊 Live Score</h2>
+              </div>
+              <div class="score-display">
+                <div class="score-ring">
+                  <svg viewBox="0 0 100 100" class="score-svg">
+                    <circle cx="50" cy="50" r="42" class="score-bg" />
+                    <circle cx="50" cy="50" r="42" class="score-fill" id="scoreCircle" />
+                  </svg>
+                  <div class="score-number" id="scoreNumber">—</div>
+                </div>
+                <div class="score-label" id="scoreLabel">Hold a chord to start</div>
+              </div>
+              <div id="fingerStatus" class="finger-status"></div>
+            </section>
+          </aside>
+
+          <!-- Center: Video + Canvas -->
+          <div class="video-container">
+            <div class="video-wrapper glass" id="videoWrapper">
+              <video id="webcamVideo" autoplay playsinline muted aria-hidden="true"></video>
+              <canvas id="overlayCanvas" aria-label="Guitar fretboard overlay"></canvas>
+              <div class="video-placeholder" id="videoPlaceholder">
+                <div class="placeholder-halo"></div>
+                <div class="placeholder-icon">📷</div>
+                <h3>Webcam Stream Offline</h3>
+                <p>Click <strong>Start Camera</strong> to begin real-time chord detection</p>
+              </div>
+              <!-- Position warning overlay -->
+              <div id="positionWarningOverlay" class="position-warning hidden" aria-live="assertive">
+                <span class="warning-icon">⚠️</span> <span id="positionWarningText">Move Guitar Left</span>
+              </div>
+              <!-- Calibration overlay -->
+              <div id="calibrationBox" class="calibration-box hidden" aria-hidden="true">
+                <div class="calib-corner tl"></div>
+                <div class="calib-corner tr"></div>
+                <div class="calib-corner bl"></div>
+                <div class="calib-corner br"></div>
+                <div class="calib-label">🎸 Align with guitar neck</div>
+              </div>
+            </div>
+
+            <!-- Hint bar below video -->
+            <div class="hint-bar glass" id="hintBar">
+              <span class="hint-icon">💡</span>
+              <span id="hintText">Start camera and position your guitar in frame to begin coaching.</span>
+            </div>
+          </div>
+
+          <!-- Right panel: Chord reference -->
+          <aside class="reference-panel glass tilt-card">
+            <div class="section-header">
+              <h2 class="section-title">📖 Chord Chart</h2>
+              <span class="section-badge" id="chartChordBadge">Em</span>
+            </div>
+            <div id="chordChart" class="chord-chart">
+              <p class="hint-text">E Minor fingering will appear here.</p>
+            </div>
+
+            <div class="tips-section">
+              <h2 class="section-title">💡 Pro Fingering Tips</h2>
+              <ul class="tips-list" id="tipsList">
+                <li>Middle finger → A string, fret 2</li>
+                <li>Ring finger → D string, fret 2</li>
+                <li>All other strings ring open cleanly</li>
+                <li>Arch fingers to avoid muting adjacent strings</li>
+              </ul>
+            </div>
+          </aside>
+        </main>
+      </div>
+
+      <!-- ================= TAB 2: 3D INTERACTIVE FRETBOARD ================= -->
+      <div class="tab-pane" id="tab-3d">
+        <section class="section-3d glass">
+          <div class="studio-section-header">
+            <div>
+              <div class="tag-row">
+                <span class="badge-tag amber">Interactive 3D Engine</span>
+                <span class="badge-tag cyan">WebGL + Three.js</span>
+              </div>
+              <h2 class="studio-title">🪐 3D Tactile Guitar Neck & Strum Studio</h2>
+              <p class="studio-subtitle">
+                Orbit, pan, and zoom to inspect chord finger placements in 3D. Click strings to pluck with acoustic physics, or hit Strum to hear the full chord!
+              </p>
+            </div>
+
+            <div class="controls-toolbar">
+              <button id="btn3dStrum" class="btn btn-amber" title="Strum active chord">
+                <span class="btn-icon">⚡</span> Strum Chord
+              </button>
+              <div class="button-group">
+                <button id="btn3dViewPlayer" class="btn btn-secondary btn-sm" title="Player Perspective">
+                  👤 Player POV
+                </button>
+                <button id="btn3dViewFront" class="btn btn-secondary btn-sm" title="Front View">
+                  🏢 Front View
+                </button>
+                <button id="btn3dViewAngle" class="btn btn-secondary btn-sm active" title="Angled View">
+                  📐 Angled
+                </button>
+              </div>
+              <button id="btn3dSoundToggle" class="btn btn-secondary btn-icon-only" title="Toggle Sound">
+                🔊
+              </button>
+            </div>
+          </div>
+
+          <!-- Chord Pill Selector Bar -->
+          <div class="chord-pill-bar">
+            <span class="pill-bar-label">Inspect Chord:</span>
+            <div class="chord-pills" id="chordPillsContainer">
+              <button class="chord-pill active" data-chord="em">Em</button>
+              <button class="chord-pill" data-chord="c">C</button>
+              <button class="chord-pill" data-chord="g">G</button>
+              <button class="chord-pill" data-chord="d">D</button>
+              <button class="chord-pill" data-chord="am">Am</button>
+              <button class="chord-pill" data-chord="e">E</button>
+              <button class="chord-pill" data-chord="a">A</button>
+              <button class="chord-pill" data-chord="f">F</button>
+              <button class="chord-pill" data-chord="dm">Dm</button>
+            </div>
+          </div>
+
+          <!-- 3D Canvas Viewport Container -->
+          <div class="three-viewport-wrapper" id="threeViewport">
+            <!-- Canvas is injected here by ThreeGuitarVisualizer.js -->
+            
+            <!-- 3D HUD Overlay -->
+            <div class="three-hud-overlay">
+              <div class="hud-card glass">
+                <div class="hud-label">Active Chord</div>
+                <div class="hud-value" id="hudChordName">E Minor (Em)</div>
+                <div class="hud-desc" id="hudChordDesc">Middle finger on A (2), Ring on D (2)</div>
+                <div class="hud-diagram-mini" id="hudChordDiagramMini"></div>
+              </div>
+
+              <div class="hud-legend">
+                <div class="legend-item"><span class="legend-dot cyan"></span> Finger Placement (1-4)</div>
+                <div class="legend-item"><span class="legend-dot green"></span> Open String (O)</div>
+                <div class="legend-item"><span class="legend-dot red"></span> Muted String (X)</div>
+              </div>
+
+              <div class="hud-hint">
+                <span>🖱️ Drag to rotate • Scroll to zoom • Click any string to pluck</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ================= TAB 3: PRACTICE SESSION ================= -->
+      <div class="tab-pane" id="tab-practice">
+        <section class="audio-section glass" id="audioSection">
+          <!-- Section header -->
+          <div class="audio-header">
+            <div>
+              <div class="tag-row">
+                <span class="badge-tag amber">Audio Recognition</span>
+                <span class="badge-tag emerald">Time Attack</span>
+              </div>
+              <h2 class="audio-title">🎤 Multi-Chord Practice Studio</h2>
+              <p class="audio-subtitle">Play each chord cleanly on your guitar — the system auto-advances when it recognizes your chord!</p>
+            </div>
+            <div class="audio-controls">
+              <button id="btnStartMic" class="btn btn-primary" aria-label="Start practice session">
+                <span class="btn-icon">🎙️</span> Start Practice
+              </button>
+              <button id="btnStopMic" class="btn btn-secondary" disabled aria-label="End practice session">
+                <span class="btn-icon">■</span> End Session
+              </button>
+            </div>
+          </div>
+
+          <!-- Session config row -->
+          <div class="session-config-row">
+            <div class="config-item">
+              <span class="audio-notes-label">Duration:</span>
+              <select id="durationSelect" class="select goal-select">
+                <option value="30" selected>30 sec</option>
+                <option value="60">60 sec</option>
+                <option value="90">90 sec</option>
+                <option value="120">120 sec</option>
+              </select>
+            </div>
+            <div class="config-item">
+              <span class="audio-notes-label">Target Sequence:</span>
+              <span class="seq-label">Em → C → G → D</span>
+            </div>
+          </div>
+
+          <!-- Practice body -->
+          <div class="practice-body-v2">
+            <!-- LEFT: Countdown + VU meter + notes -->
+            <div class="practice-left-v2 tilt-card">
+              <!-- Countdown ring -->
+              <div class="countdown-wrap" id="countdownWrap" title="Session countdown">
+                <svg class="countdown-svg" viewBox="0 0 140 140">
+                  <circle cx="70" cy="70" r="58" class="cd-track" />
+                  <circle cx="70" cy="70" r="58" class="cd-fill" id="cdFill" />
+                </svg>
+                <div class="countdown-inner">
+                  <span class="cd-icon" id="cdIcon">🎸</span>
+                  <span class="cd-time" id="cdTime">--</span>
+                  <span class="cd-label">seconds</span>
+                </div>
+              </div>
+
+              <!-- VU Meter -->
+              <div class="audio-meter" id="audioMeter" aria-hidden="true">
+                <div class="meter-bar"></div>
+                <div class="meter-bar"></div>
+                <div class="meter-bar"></div>
+                <div class="meter-bar"></div>
+                <div class="meter-bar"></div>
+                <div class="meter-bar"></div>
+                <div class="meter-bar"></div>
+                <div class="meter-bar"></div>
+                <div class="meter-bar"></div>
+                <div class="meter-bar"></div>
+                <div class="meter-bar"></div>
+                <div class="meter-bar"></div>
+              </div>
+
+              <!-- Detected notes -->
+              <div class="audio-notes-row">
+                <span class="audio-notes-label">Notes heard:</span>
+                <div class="audio-notes-chips" id="detectedNotes">
+                  <span class="note-chip muted">—</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- CENTRE: Target chord + pipeline -->
+            <div class="practice-centre">
+              <!-- Target chord card -->
+              <div class="target-card tilt-card" id="targetCard">
+                <canvas class="practice-confetti-canvas" id="practiceConfettiCanvas" aria-hidden="true"></canvas>
+                <div class="chord-match-badge" id="chordMatchBadge" aria-hidden="true">✨ PERFECT! 🎸</div>
+                <div class="target-card-label">Target Chord</div>
+                <div class="target-chord-name" id="targetChordName">—</div>
+                <div class="target-chord-full" id="targetChordFull">Start the session to begin</div>
+                <div class="target-chord-diagram-mini" id="targetChordDiagramMini"></div>
+              </div>
+
+              <!-- Chord pipeline Em → C → G → D -->
+              <div class="chord-pipeline" id="chordPipeline" role="list" aria-label="Chord sequence">
+                <!-- Filled by JS -->
+              </div>
+
+              <!-- Live detection banner -->
+              <div class="detect-banner idle" id="detectBanner" aria-live="polite">
+                <span id="detectIcon">🎤</span>
+                <div class="detect-text">
+                  <span id="detectChordName">Listening for guitar sound…</span>
+                  <span id="detectChordDetail"></span>
+                </div>
+                <div class="detect-bar-wrap">
+                  <div class="detect-bar" id="detectBar" style="width:0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT: Stats + result -->
+            <div class="practice-right-v2">
+              <!-- Session stats -->
+              <div class="stat-grid">
+                <div class="stat-card tilt-card">
+                  <div class="stat-value" id="statChords">0 / 4</div>
+                  <div class="stat-label">Chords Done</div>
+                </div>
+                <div class="stat-card tilt-card">
+                  <div class="stat-value" id="statTime">--:--</div>
+                  <div class="stat-label">Remaining</div>
+                </div>
+                <div class="stat-card tilt-card">
+                  <div class="stat-value" id="statElapsed">0:00</div>
+                  <div class="stat-label">Elapsed</div>
+                </div>
+                <div class="stat-card tilt-card">
+                  <div class="stat-value" id="statAccuracy">—</div>
+                  <div class="stat-label">Accuracy</div>
+                </div>
+              </div>
+
+              <!-- Result/feedback banner -->
+              <div class="audio-result idle" id="audioResult" aria-live="polite">
+                <span id="audioResultIcon">🎸</span>
+                <span id="audioResultText">Press Start Practice to test your timing and chord transitions!</span>
+              </div>
+
+              <!-- Session complete panel (hidden until done) -->
+              <div class="session-complete hidden" id="sessionComplete">
+                <div class="complete-icon">🏆</div>
+                <div class="complete-title">Session Complete!</div>
+                <div class="complete-detail" id="completeDetail">—</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ================= TAB 4: FREE PLAY ================= -->
+      <div class="tab-pane" id="tab-freeplay">
+        <section class="audio-section glass" id="freePlaySection">
+          <!-- Section header -->
+          <div class="audio-header">
+            <div>
+              <div class="tag-row">
+                <span class="badge-tag cyan">Real-Time Pitch FFT</span>
+                <span class="badge-tag amber">Free Strum</span>
+              </div>
+              <h2 class="audio-title">🎸 Free Play Detection</h2>
+              <p class="audio-subtitle">Strum any chord on your guitar naturally — the tuner & chord engine will identify what it hears.</p>
+            </div>
+            <div class="audio-controls">
+              <button id="btnStartFreePlay" class="btn btn-primary" aria-label="Start free play mode">
+                <span class="btn-icon">🎙️</span> Start Listening
+              </button>
+              <button id="btnStopFreePlay" class="btn btn-secondary" disabled aria-label="End free play mode">
+                <span class="btn-icon">■</span> Stop
+              </button>
+            </div>
+          </div>
+
+          <!-- Free Play Body -->
+          <div class="practice-body-v2 freeplay-body">
+            <div class="practice-centre">
+              <!-- Detected Chord Display -->
+              <div class="target-card tilt-card" id="freePlayCard">
+                <div class="target-card-label" id="freePlayLabel">Identified Chord</div>
+                <div class="target-chord-name freeplay-chord-name" id="freePlayChordName">—</div>
+                <div class="target-chord-full" id="freePlayChordFull">Play any chord to identify</div>
+              </div>
+
+              <!-- Notes Heard -->
+              <div class="audio-notes-row" style="margin-top: 20px; justify-content: center;">
+                <span class="audio-notes-label">Frequencies & Notes:</span>
+                <div class="audio-notes-chips" id="freePlayNotes">
+                  <span class="note-chip muted">—</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ================= TAB 5: CHORD REFERENCE LIBRARY ================= -->
+      <div class="tab-pane" id="tab-chords">
+        <section class="chord-library-section glass">
+          <div class="studio-section-header">
+            <div>
+              <div class="tag-row">
+                <span class="badge-tag amber">Visual Reference Engine</span>
+                <span class="badge-tag cyan">9 Essential Chords</span>
+                <span class="badge-tag emerald">Interactive Diagrams</span>
+              </div>
+              <h2 class="studio-title">📚 Guitar Chord Reference Library</h2>
+              <p class="studio-subtitle">
+                High-definition visual chord charts, fingering guides, finger numbers (1–4), acoustic sound previews, and transitions. Click any chord to practice with AI camera tracking or inspect in interactive 3D!
+              </p>
+            </div>
+
+            <div class="library-top-controls">
+              <!-- Filter Chips -->
+              <div class="chord-filter-group" id="chordFilterGroup">
+                <button class="filter-chip active" data-filter="all">All (9)</button>
+                <button class="filter-chip" data-filter="beginner">Beginner (8)</button>
+                <button class="filter-chip" data-filter="intermediate">Barre / Intermediate (1)</button>
+                <button class="filter-chip" data-filter="major">Major (5)</button>
+                <button class="filter-chip" data-filter="minor">Minor (4)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chord Reference Grid -->
+          <div class="chord-cards-grid" id="chordCardsGrid">
+            <!-- Populated dynamically by ChordDiagramRenderer -->
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+    <!-- ===== Chord Detail & Lightbox Modal ===== -->
+    <div id="chordModal" class="chord-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalChordTitle">
+      <div class="chord-modal-backdrop" id="modalBackdrop"></div>
+      <div class="chord-modal-dialog glass">
+        <button class="chord-modal-close" id="modalCloseBtn" aria-label="Close modal">✕</button>
+        <div class="chord-modal-content" id="modalContent">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Floating AI Coach Chatbot ===== -->
+    <button id="chatbotToggleBtn" class="chatbot-toggle-btn" aria-label="Open AI Coach">💬</button>
+
+    <div id="chatbotWidget" class="chatbot-widget" aria-hidden="true">
+      <div class="chatbot-header">
+        <div class="chatbot-title">
+          <span class="chatbot-icon">🎸</span> Studio Coach AI
+        </div>
+        <button id="chatbotCloseBtn" class="chatbot-close" aria-label="Close chat">×</button>
+      </div>
+
+      <div id="chatbotMessages" class="chatbot-messages">
+        <div class="message model">
+          <p>Welcome to Guitar Chord Studio! Ask me anything about chord fingerings, fretboard geometry, transitions, or music theory.</p>
+        </div>
+      </div>
+
+      <div class="chatbot-input-area">
+        <input type="text" id="chatbotInput" class="chatbot-input" placeholder="e.g. How do I transition smoothly from G to C?"
+          aria-label="Type your message" autocomplete="off" />
+        <button id="chatbotSendBtn" class="chatbot-send" aria-label="Send message">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+
+</html>

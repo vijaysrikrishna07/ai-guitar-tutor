@@ -1,0 +1,146 @@
+{
+  "_meta": {
+    "description": "Essential guitar chord dataset for visual and audio coaching. Strings array is [E2, A2, D3, G3, B3, E4] (low to high). Values: 'x'=muted (-1), 0=open, 1-N=fret number. Fingers: 1=index, 2=middle, 3=ring, 4=pinky, 0=none.",
+    "string_order": [
+      "E2",
+      "A2",
+      "D3",
+      "G3",
+      "B3",
+      "E4"
+    ],
+    "string_index": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "chords": [
+    {
+      "id": "E_minor_open",
+      "name": "Em",
+      "fullName": "E Minor",
+      "type": "minor",
+      "variant": "open",
+      "strings": [0, 2, 2, 0, 0, 0],
+      "fingers": [0, 2, 3, 0, 0, 0],
+      "barre": null,
+      "difficulty": "beginner",
+      "description": "Standard open E minor chord — middle finger on A string fret 2, ring finger on D string fret 2."
+    },
+    {
+      "id": "C_major_open",
+      "name": "C",
+      "fullName": "C Major",
+      "type": "major",
+      "variant": "open",
+      "strings": ["x", 3, 2, 0, 1, 0],
+      "fingers": [0, 3, 2, 0, 1, 0],
+      "barre": null,
+      "difficulty": "beginner",
+      "description": "Open C major — ring on A fret 3, middle on D fret 2, index on B fret 1."
+    },
+    {
+      "id": "G_major_open",
+      "name": "G",
+      "fullName": "G Major",
+      "type": "major",
+      "variant": "open",
+      "strings": [3, 2, 0, 0, 0, 3],
+      "fingers": [2, 1, 0, 0, 0, 3],
+      "barre": null,
+      "difficulty": "beginner",
+      "description": "Open G major — middle on low E fret 3, index on A fret 2, ring on high e fret 3."
+    },
+    {
+      "id": "D_major_open",
+      "name": "D",
+      "fullName": "D Major",
+      "type": "major",
+      "variant": "open",
+      "strings": ["x", "x", 0, 2, 3, 2],
+      "fingers": [0, 0, 0, 1, 3, 2],
+      "barre": null,
+      "difficulty": "beginner",
+      "description": "Open D major — index on G fret 2, ring on B fret 3, middle on high e fret 2."
+    },
+    {
+      "id": "A_minor_open",
+      "name": "Am",
+      "fullName": "A Minor",
+      "type": "minor",
+      "variant": "open",
+      "strings": ["x", 0, 2, 2, 1, 0],
+      "fingers": [0, 0, 2, 3, 1, 0],
+      "barre": null,
+      "difficulty": "beginner",
+      "description": "Open A minor — middle on D fret 2, ring on G fret 2, index on B fret 1."
+    },
+    {
+      "id": "E_major_open",
+      "name": "E",
+      "fullName": "E Major",
+      "type": "major",
+      "variant": "open",
+      "strings": [0, 2, 2, 1, 0, 0],
+      "fingers": [0, 2, 3, 1, 0, 0],
+      "barre": null,
+      "difficulty": "beginner",
+      "description": "Open E major — middle on A fret 2, ring on D fret 2, index on G fret 1."
+    },
+    {
+      "id": "A_major_open",
+      "name": "A",
+      "fullName": "A Major",
+      "type": "major",
+      "variant": "open",
+      "strings": ["x", 0, 2, 2, 2, 0],
+      "fingers": [0, 0, 1, 2, 3, 0],
+      "barre": null,
+      "difficulty": "beginner",
+      "description": "Open A major — index on D fret 2, middle on G fret 2, ring on B fret 2."
+    },
+    {
+      "id": "F_major_barre",
+      "name": "F",
+      "fullName": "F Major",
+      "type": "major",
+      "variant": "barre",
+      "strings": [1, 3, 3, 2, 1, 1],
+      "fingers": [1, 3, 4, 2, 1, 1],
+      "barre": 1,
+      "difficulty": "intermediate",
+      "description": "Barre F major — index barres fret 1, ring on A fret 3, pinky on D fret 3, middle on G fret 2."
+    },
+    {
+      "id": "D_minor_open",
+      "name": "Dm",
+      "fullName": "D Minor",
+      "type": "minor",
+      "variant": "open",
+      "strings": ["x", "x", 0, 2, 3, 1],
+      "fingers": [0, 0, 0, 2, 3, 1],
+      "barre": null,
+      "difficulty": "beginner",
+      "description": "Open D minor — index on high e fret 1, middle on G fret 2, ring on B fret 3."
+    }
+  ],
+  "chordProgressions": [
+    {
+      "id": "pop_standard",
+      "name": "Standard Practice Sequence",
+      "key": "G",
+      "chords": [
+        "E_minor_open",
+        "C_major_open",
+        "G_major_open",
+        "D_major_open"
+      ],
+      "bpm": 60,
+      "beatsPerChord": 4
+    }
+  ]
+}
